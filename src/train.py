@@ -8,6 +8,8 @@ from tqdm.auto import tqdm
 
 from data_setup import create_dataloaders
 
+from utils import classification_report_function
+
 
 def val_step(model,val_dataloader,loss_fn,device):
   model.eval()
@@ -131,6 +133,8 @@ def train(model:torch.nn.Module,
              "val_acc" : []
              }
   # 3. Loop through training and testing steps for a number of epcohs
+
+  best_acc_score = 0
   for epoch in tqdm(range(epochs)):
     train_loss , train_acc = train_step(model=model,
                                         dataloader = train_dataloader,
@@ -159,6 +163,11 @@ def train(model:torch.nn.Module,
     results["test_acc"].append(test_acc)
     results["val_loss"].append(val_loss)
     results["val_acc"].append(val_acc)
+
+    if(best_acc_score < results["val_acc"][epoch]):
+      best_acc_score = results["val_acc"][epoch]
+      torch.save(model.state_dict(),"cargo_resnet18.pth")
+
     
 
   # 6. Return the filled results at the end of epochs
@@ -182,3 +191,21 @@ if __name__ == "__main__":
 
     print(results_training , 'results for training')
     torch.save(results_training, "training_results.pth")
+    # torch.save(model.state_dict(), "cargo_resnet18.pth")
+
+    # already saving the model's best epoch
+    model.load_state_dict(
+      torch.load("cargo_resnet18.pth", map_location=device)
+    )
+
+    model.to(device)
+
+    classification_report_function(model=model ,
+                                    test_dataloader=test_dataloaders,
+                                    class_names=class_names,
+                                    device=device)
+
+    
+
+   
+

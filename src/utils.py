@@ -2,6 +2,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+from sklearn.metrics import classification_report , confusion_matrix
 
 import torch
 results_training = torch.load("training_results.pth")
@@ -44,5 +45,33 @@ def loss_curve(results):
 
     plt.show()
 
-loss_curve(results=results_training)
-accuracy_curve(results=results_training)
+def classification_report_function(model,test_dataloader,class_names,device):
+  model.to(device)
+  model.eval()
+  y_true = []
+  y_pred = []
+
+  with torch.inference_mode():
+    for X , y in test_dataloader:
+      X = X.to(device)
+      y = y.to(device)
+
+      y_logit = model(X)
+      predictions = torch.argmax(y_logit , dim=1)
+      
+      y_true.extend(y.cpu().numpy())
+      y_pred.extend(predictions.cpu().numpy())
+
+    
+    final_report = classification_report(y_true, y_pred, target_names=class_names)
+    print(f" ----- Classification report -----------  \n" )
+    print(final_report)
+
+    confusion_report = confusion_matrix(y_true,y_pred)
+    print(f"-------- Confusion report --------------------- \n")
+    print(confusion_report)
+
+  return final_report , confusion_report
+
+#loss_curve(results=results_training)
+#accuracy_curve(results=results_training)

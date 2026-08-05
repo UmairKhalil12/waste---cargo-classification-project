@@ -8,7 +8,6 @@ weights = models.ResNet18_Weights.DEFAULT
 
 model = models.resnet18(weights=weights)
 
-
 # Freeze pretrained layers
 for param in model.parameters():
     param.requires_grad = False
@@ -18,8 +17,6 @@ model.fc = nn.Linear(
     in_features=model.fc.in_features,
     out_features=5
 )
-
-
 
 # device
 device = "cuda" if torch.cuda.is_available() else "cpu"
