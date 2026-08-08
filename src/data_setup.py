@@ -77,11 +77,11 @@ def create_datasets(train_transform  , test_transform , val_transform ):
     class_names = train_data.classes
 
 
-    print(f"Training images: {len(train_data)}")
-    print(f"Testing images: {len(test_data)}")
-    print(f"Validation images: {len(val_data)}")
-    print(f"Classes : {class_names}")
-    print(f"Class to Index: {train_data.class_to_idx}")
+    # print(f"Training images: {len(train_data)}")
+    # print(f"Testing images: {len(test_data)}")
+    # print(f"Validation images: {len(val_data)}")
+    # print(f"Classes : {class_names}")
+    # print(f"Class to Index: {train_data.class_to_idx}")
 
     return train_data , test_data , val_data ,class_names
 

@@ -1,14 +1,11 @@
 import torch.nn as nn
 import torch
-
-
 from model_builder import device , model , optimizer , loss_function
-
 from tqdm.auto import tqdm
-
 from data_setup import create_dataloaders
-
 from utils import classification_report_function
+from predict import evaluate_model
+
 
 
 def val_step(model,val_dataloader,loss_fn,device):
@@ -176,23 +173,24 @@ def train(model:torch.nn.Module,
 
 if __name__ == "__main__":
 
+    # =================================================== TRAIN =============================== //
     train_dataloaders, test_dataloaders, val_dataloader, class_names = create_dataloaders()
 
-    results_training = train(
-        model=model,
-        train_dataloader=train_dataloaders,
-        test_dataloader=test_dataloaders,
-        val_dataloader=val_dataloader,
-        optimizer=optimizer,
-        loss_fn=loss_function,
-        epochs=5,
-        device=device
-    )
+    # results_training = train(
+    #     model=model,
+    #     train_dataloader=train_dataloaders,
+    #     test_dataloader=test_dataloaders,
+    #     val_dataloader=val_dataloader,
+    #     optimizer=optimizer,
+    #     loss_fn=loss_function,
+    #     epochs=5,
+    #     device=device
+    # )
 
-    print(results_training , 'results for training')
-    torch.save(results_training, "training_results.pth")
-    # torch.save(model.state_dict(), "cargo_resnet18.pth")
-
+    # print(results_training , 'results for training')
+    # torch.save(results_training, "training_results.pth")
+  
+    # -------------------- SAVING MODEL ------------------------------- //
     # already saving the model's best epoch
     model.load_state_dict(
       torch.load("cargo_resnet18.pth", map_location=device)
@@ -200,10 +198,25 @@ if __name__ == "__main__":
 
     model.to(device)
 
-    classification_report_function(model=model ,
-                                    test_dataloader=test_dataloaders,
-                                    class_names=class_names,
-                                    device=device)
+
+    # ============== EVALUATION -------------------------- //
+
+    # classification_report,  confusion_matrix = classification_report_function(model=model ,
+    #                                 test_dataloader=test_dataloaders,
+    #                                 class_names=class_names,
+    #                                 device=device)
+
+    # torch.save(classification_report , "classification_report.pth")
+    # torch.save(confusion_matrix , "confusion_matrix.pth")
+
+
+
+    # ------------------ EVALUATE MODEL ---------------- //
+    train_dataloader , test_dataloader , val_dataloader ,  class_names = create_dataloaders()
+    report , matrix = evaluate_model(model , test_dataloader=test_dataloader,device=device,class_names=class_names)
+    print(report)
+    print(matrix)
+
 
     
 

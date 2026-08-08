@@ -1,6 +1,6 @@
 BATCH_SIZE = 16
 IMAGE_SIZE = (224,224)
-NUM_WORKERS = 4
+NUM_WORKERS = 2
 DATASET_PATH = "data/cargo classification dataset/cargo_classification"
 
 TRAIN_DIR = "data/cargo classification dataset/cargo_split/train"
