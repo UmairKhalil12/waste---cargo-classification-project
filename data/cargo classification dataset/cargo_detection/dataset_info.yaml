@@ -1,4 +1,0 @@
-train: ./images
-
-nc: 4
-names: ['Brick', 'Wood', 'Ground', 'Concrete']

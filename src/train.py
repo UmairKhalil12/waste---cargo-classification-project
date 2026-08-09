@@ -3,7 +3,7 @@ import torch
 from model_builder import device , model , optimizer , loss_function
 from tqdm.auto import tqdm
 from data_setup import create_dataloaders
-from utils import classification_report_function
+from utils import classification_report_function , loss_curve , accuracy_curve , heat_map_confusion_matrix
 from predict import evaluate_model
 
 
@@ -216,6 +216,15 @@ if __name__ == "__main__":
     report , matrix = evaluate_model(model , test_dataloader=test_dataloader,device=device,class_names=class_names)
     print(report)
     print(matrix)
+
+    results_training = torch.load("training_results.pth", map_location=device)
+    loss_curve(results=results_training)
+    accuracy_curve(results=results_training)
+
+    heat_map_confusion_matrix(confusion_report=matrix,class_names=class_names)
+
+
+
 
 
     
